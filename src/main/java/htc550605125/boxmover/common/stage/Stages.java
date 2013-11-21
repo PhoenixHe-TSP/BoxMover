@@ -9,5 +9,9 @@ import java.util.HashMap;
  * Date: 10/28/13
  * Time: 11:14 AM
  */
+
+/**
+ * A list of maps that you can find one by its name
+ */
 public class Stages extends HashMap<String, Stage> implements Serializable {
 }

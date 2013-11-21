@@ -1,12 +1,11 @@
 package htc550605125.boxmover.server;
 
 import htc550605125.boxmover.common.Config;
-import htc550605125.boxmover.common.stage.Stage;
-import htc550605125.boxmover.common.stage.Stages;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.*;
+import java.util.HashMap;
 import java.util.Random;
 
 /**
@@ -15,11 +14,15 @@ import java.util.Random;
  * Date: 10/28/13
  * Time: 8:18 AM
  */
+
+/**
+ * The management of the saves
+ */
 public class SaveSlot {
     private static final Logger logger = LogManager.getLogger("common");
     private static SaveSlot instance = null;
     private String saveRoot = null, suffix = null, randomValues = null;
-    private final Stages maps = new Stages();
+    private HashMap<String, Object> maps = new HashMap<String, Object>();
 
     public static SaveSlot getInstance() {
         if (instance == null)
@@ -27,28 +30,40 @@ public class SaveSlot {
         return instance;
     }
 
-    private SaveSlot()  {
+    private SaveSlot() {
+        // Root directory of the save files
         saveRoot = Config.getConfig().get("saves/root");
+        // File suffix of the saved files
         suffix = Config.getConfig().get("saves/suffix");
+        // Range of random characters
         randomValues = Config.getConfig().get("saves/randomValues");
         loadSaves(new File(saveRoot));
     }
 
-    public final Stages getMaps() {
+    public final HashMap<String, Object> getMaps() {
         return maps;
     }
 
-    public void saveStage(String slot, Stage stage) {
+    /**
+     * Save the stage to the slot, the file path
+     * is {saveRoot}/{slot}.{suffix} specified in the
+     * configure file.
+     *
+     * @see Config
+     */
+    public void save(String slot, Object obj) {
+        maps.put(slot, obj);
         slot = saveRoot + slot + suffix;
-        writeSlot(new File(slot), stage);
-        String ID = stage.info().ID();
-        maps.put(ID, stage);
+        writeSlot(new File(slot), obj);
         logger.info("Game saved to " + slot);
     }
 
+    /**
+     * @return Random generated slot name
+     */
     public String getRandomSlot() {
         Random r = new Random();
-        for (;;) {
+        for (; ; ) {
             String ret = "";
             for (int i = -2; i < r.nextInt(2); ++i)
                 ret += String.valueOf(randomValues.charAt(r.nextInt(randomValues.length())));
@@ -56,6 +71,7 @@ public class SaveSlot {
         }
     }
 
+    // Load a save slot from a file
     private void loadSaves(File fd) {
         if (fd.isFile()) {
             String name = fd.getName();
@@ -63,8 +79,7 @@ public class SaveSlot {
                 try {
                     name = name.substring(0, name.length() - suffix.length());
                     maps.put(name, readSlot(fd));
-                }
-                catch (IOException e) {
+                } catch (IOException e) {
                     logger.warn("Cannot load save slot: " + fd.getPath() + ". Delete it.");
                     fd.delete();
                 }
@@ -73,28 +88,26 @@ public class SaveSlot {
         }
         try {
             for (File f : fd.listFiles()) loadSaves(f);
-        }
-        catch (NullPointerException e) {
+        } catch (NullPointerException e) {
         }
     }
 
-    private void writeSlot(File fd, Stage stage) {
+    // Save the stage to a file
+    private void writeSlot(File fd, Object obj) {
         try {
             if (!fd.exists()) fd.createNewFile();
-            new ObjectOutputStream(new FileOutputStream(fd)).writeObject(stage);
-        }
-        catch (IOException e) {
+            new ObjectOutputStream(new FileOutputStream(fd)).writeObject(obj);
+        } catch (IOException e) {
             logger.fatal(e);
             e.printStackTrace();
             System.exit(-1);
         }
     }
 
-    private Stage readSlot(File fd) throws IOException {
+    private Object readSlot(File fd) throws IOException {
         try {
-            return (Stage) new ObjectInputStream(new FileInputStream(fd)).readObject();
-        }
-        catch (ClassNotFoundException e) {
+            return new ObjectInputStream(new FileInputStream(fd)).readObject();
+        } catch (ClassNotFoundException e) {
             throw new IOException();
         }
     }

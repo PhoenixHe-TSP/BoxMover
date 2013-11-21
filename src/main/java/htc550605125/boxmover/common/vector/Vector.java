@@ -11,17 +11,20 @@ import java.io.Serializable;
  * Time: 9:39 AM
  */
 
-/** Abstract Vector Base Class */
+/**
+ * Abstract Vector Base Class
+ */
 public abstract class Vector implements Serializable, Cloneable {
-    /** The {@link Dim} it belongs to. */
+    /**
+     * The {@link Dim} it belongs to.
+     */
     Dim dim = null;
 
     public Vector clone() {
         Vector ret = null;
         try {
             ret = (Vector) super.clone();
-        }
-        catch (CloneNotSupportedException e) {
+        } catch (CloneNotSupportedException e) {
             e.printStackTrace();
             System.exit(-1);
         }
@@ -32,11 +35,13 @@ public abstract class Vector implements Serializable, Cloneable {
         return dim;
     }
 
-    /** Check if this vector is in the {@link Dim} and
+    /**
+     * Check if this vector is in the {@link Dim} and
      * return the reference position of the {@link Dim}
-     * @see htc550605125.boxmover.common.stage.Stage
+     *
      * @return The reference position in Stage.Data[]
      * @throws OutOfMapException
+     * @see htc550605125.boxmover.common.stage.Stage
      */
     public int checkGet() throws OutOfMapException {
         if (!checkRange())
@@ -44,18 +49,23 @@ public abstract class Vector implements Serializable, Cloneable {
         return getPos();
     }
 
-    /** Add another Vector to this Vector */
+    /**
+     * Add another Vector to this Vector
+     */
     public abstract Vector add(Vector a);
 
-    /** @return The opposite Vector */
+    /**
+     * @return The opposite Vector
+     */
     public abstract Vector neg();
 
-    /** @see htc550605125.boxmover.common.stage.Stage
+    /**
      * @return The reference position in Stage.Data[] without range check
+     * @see htc550605125.boxmover.common.stage.Stage
      */
     public abstract int getPos();
 
-    /** @return If the vector is in the {@link Dim} */
+    // If the vector is in the dimension
     protected abstract boolean checkRange();
 }
 

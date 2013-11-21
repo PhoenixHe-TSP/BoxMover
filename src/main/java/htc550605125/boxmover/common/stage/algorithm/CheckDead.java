@@ -17,15 +17,18 @@ import java.util.Queue;
  * Date: 11/2/13
  * Time: 7:33 PM
  */
+
+/**
+ * Algorithm that check if the player is unable to win
+ * The algorithm is a bit weak that it could not checkout
+ * all the fail situation, but quiet a lot.
+ */
 public class CheckDead {
     private final static Logger logger = LogManager.getLogger("server");
-    private final Stage stage;
+    private Stage stage = null;
 
-    public CheckDead(Stage stage) {
-        this.stage = (Stage)stage.clone();
-    }
-
-    public boolean check() {
+    public boolean check(Stage _stage) {
+        stage = _stage.clone();
         int boxRemain = 0;
         for (ElementSet es : stage.getRawData())
             if (shouldCount(es))
@@ -33,7 +36,7 @@ public class CheckDead {
 
         Queue<Vector> queue = new ArrayDeque<Vector>();
         int touchableBox = 0;
-        boolean[] vis = new boolean[stage.info().dim().getMax()];
+        boolean[] vis = new boolean[stage.info().getDim().getMax()];
         queue.offer(stage.player());
         vis[stage.player().getPos()] = true;
         while (!queue.isEmpty()) {
@@ -50,14 +53,15 @@ public class CheckDead {
                         ++touchableBox;
                         es.del(Element.BOX);
                     }
-                }
-                catch (OutOfMapException e) {
+                } catch (OutOfMapException e) {
                     e.printStackTrace();
                     logger.fatal(e);
                     System.exit(-1);
                 }
             }
         }
+        //logger.debug("touchable=" + touchableBox);
+        //logger.debug("boxremain=" + boxRemain);
         return boxRemain != touchableBox;
     }
 
@@ -77,8 +81,7 @@ public class CheckDead {
                 if (Elem1.has(Element.BOX) || Elem1.has(Element.WALL))
                     return false;
             }
-        }
-        catch (OutOfMapException e) {
+        } catch (OutOfMapException e) {
             return false;
         }
         return true;

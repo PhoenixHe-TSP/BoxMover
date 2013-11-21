@@ -1,9 +1,9 @@
 package htc550605125.boxmover.common.stage;
 
-import htc550605125.boxmover.common.vector.Dim2D;
-import htc550605125.boxmover.common.vector.Vector;
+import htc550605125.boxmover.common.element.ElementSet;
 import htc550605125.boxmover.common.element.ElementView;
 import htc550605125.boxmover.common.exception.OutOfMapException;
+import htc550605125.boxmover.common.vector.Vector;
 
 import java.io.Serializable;
 
@@ -19,10 +19,10 @@ public class StageView extends StageBase implements Serializable {
     public StageView(Stage stage) {
         super(stage.info);
         player = stage.player;
-        Dim2D dim = (Dim2D) info.dim();
-        data = new ElementView[dim.getMax()];
-        for (int i = 0; i < dim.getMax(); ++i)
-            data[i] = ElementView.valueOf(stage.data[i]);
+        data = new ElementView[stage.info().getDim().getMax()];
+        int i = 0;
+        for (ElementSet es : stage.getRawData())
+            data[i++] = ElementView.valueOf(es);
     }
 
     public ElementView get(Vector v) throws OutOfMapException {

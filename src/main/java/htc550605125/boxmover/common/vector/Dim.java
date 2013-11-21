@@ -1,7 +1,6 @@
 package htc550605125.boxmover.common.vector;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -10,40 +9,48 @@ import java.util.List;
  * Time: 11:38 AM
  */
 
-/** Abstract Dimesion Class
- * It defines the dimesion of the {@link Vector}
+/**
+ * Abstract Dimension Class
+ * It defines the dimension of the {@link Vector}
  */
 public abstract class Dim implements Serializable, Cloneable {
-    /** All the possible vectors in this dimension */
+    // All the possible vectors in this dimension
     private Vector[] allVectors = null;
-    /** All the directions that could move in this dimension */
+    // All the directions that could move in this dimension
     private Vector[] allDirections = null;
 
-    /** @return All the directions in this dimension as {@link Vector}
-     *          decorated with this Dim */
+    /**
+     * @return All the directions in this dimension as {@link Vector}
+     *         decorated with this Dim
+     */
     public final Vector[] getAllDirections() {
         if (allDirections == null) {
             allDirections = _getAllDirections();
-            /** Decorate all the vector of directions with this dimension */
+            //Decorate all the vector of directions with this dimension
             for (Vector x : allDirections) x.dim = this;
         }
         return allDirections;
     }
 
-    /**  @return All the {@link Vector} in this dimension.
-     *           decorated with this Dim */
+    /**
+     * @return All the {@link Vector} in this dimension.
+     *         decorated with this Dim
+     */
     public final Vector[] getAllVectors() {
         if (allVectors == null) {
             allVectors = _getAllVectors();
-            /** Decorate all the vector with this dimension */
+            // Decorate all the vector with this dimension
             for (Vector x : allVectors) x.dim = this;
         }
         return allVectors;
     }
 
-    /** @return The number of all the {@link Vector} in this dimension */
+    /**
+     * @return The number of all the {@link Vector} in this dimension
+     */
     public abstract int getMax();
 
     protected abstract Vector[] _getAllVectors();
+
     protected abstract Vector[] _getAllDirections();
 }

@@ -1,12 +1,10 @@
 package htc550605125.boxmover.common.stage;
 
-import htc550605125.boxmover.client.console.Utils;
-import htc550605125.boxmover.common.vector.Dim2D;
-import htc550605125.boxmover.common.vector.Vector;
 import htc550605125.boxmover.common.element.Element;
 import htc550605125.boxmover.common.element.ElementSet;
 import htc550605125.boxmover.common.exception.CannotMoveException;
 import htc550605125.boxmover.common.exception.OutOfMapException;
+import htc550605125.boxmover.common.vector.Vector;
 
 import java.io.Serializable;
 
@@ -16,8 +14,12 @@ import java.io.Serializable;
  * Date: 10/23/13
  * Time: 1:51 PM
  */
+
+/**
+ * The game stage
+ */
 public class Stage extends StageBase implements Serializable, Cloneable, Comparable<Stage> {
-    ElementSet data[] = null;
+    private ElementSet data[] = null;
 
     @Override
     public Stage clone() {
@@ -31,7 +33,7 @@ public class Stage extends StageBase implements Serializable, Cloneable, Compara
 
     public Stage(StageInfo info) {
         super(info);
-        data = new ElementSet[info.dim().getMax()];
+        data = new ElementSet[info.getDim().getMax()];
     }
 
     public Stage(Stage s) {
@@ -58,7 +60,7 @@ public class Stage extends StageBase implements Serializable, Cloneable, Compara
         return data;
     }
 
-    public Stage setPos(Vector v, ElementSet es) throws OutOfMapException, CannotMoveException{
+    public Stage setPos(Vector v, ElementSet es) throws OutOfMapException, CannotMoveException {
         if (es.has(Element.PLAYER)) {
             if (player != null)
                 throw new CannotMoveException(Element.PLAYER, player, v);
@@ -68,11 +70,12 @@ public class Stage extends StageBase implements Serializable, Cloneable, Compara
         return this;
     }
 
-    public Stage moveElement(Element e, Vector src, Vector dest) throws OutOfMapException, CannotMoveException{
+    public Stage moveElement(Element e, Vector src, Vector dest) throws OutOfMapException, CannotMoveException {
         ElementSet s = getPos(src), d = getPos(dest);
         if (!s.has(e) || d.has(e))
             throw new CannotMoveException(e, src, dest);
-        s.del(e); d.add(e);
+        s.del(e);
+        d.add(e);
         if (e == Element.PLAYER) player = dest;
         return this;
     }
@@ -87,25 +90,4 @@ public class Stage extends StageBase implements Serializable, Cloneable, Compara
         return boxCnt == destCnt;
     }
 
-    @Override
-    public String toString() {
-        StageView view = new StageView(this);
-        Dim2D dim = (Dim2D) view.info().dim();
-        StringBuilder ret = new StringBuilder();
-        try {
-            for (int i = 0; i < dim.x; ++i) {
-                for (int j = 0; j < dim.y; ++j) {
-                    ret.append(Utils.VIEWTEXT.get(view.get(dim.newVector(i, j))));
-                    //logger.debug(view.get(dim.newVector(i, j)));
-                }
-                ret.append('\n');
-            }
-        }
-        catch (OutOfMapException e) {
-            logger.fatal(e);
-            logger.fatal("At "+this.getClass());
-            System.exit(-1);
-        }
-        return ret.toString();
-    }
 }

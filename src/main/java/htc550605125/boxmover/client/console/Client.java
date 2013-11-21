@@ -1,11 +1,11 @@
 package htc550605125.boxmover.client.console;
 
-import htc550605125.boxmover.common.stage.algorithm.CheckDead;
-import htc550605125.boxmover.common.stage.algorithm.CheckGameSuccess;
-import htc550605125.boxmover.common.vector.Dim2D;
 import htc550605125.boxmover.common.exception.CannotMoveException;
 import htc550605125.boxmover.common.exception.OutOfMapException;
 import htc550605125.boxmover.common.stage.StageView;
+import htc550605125.boxmover.common.stage.algorithm.CheckDead;
+import htc550605125.boxmover.common.stage.algorithm.CheckGameSuccess;
+import htc550605125.boxmover.common.vector.Dim2D;
 import htc550605125.boxmover.server.SaveSlot;
 import htc550605125.boxmover.server.Server;
 import org.apache.logging.log4j.LogManager;
@@ -23,31 +23,48 @@ public class Client {
     private Server server = null;
     private boolean quited = false;
 
-    public Client(Server server){
+    public Client(Server server) {
         this.server = server;
     }
 
     public void start() {
-        logger.info("Stage:" + server.getStage().info().title() + " Loaded.");
+        logger.info("Stage:" + server.getStage().info().getTitle() + " Loaded.");
         logger.info("Enter \"h\" to show help info.");
-        CheckDead ck = new CheckDead(server.getStage());
         while (!CheckGameSuccess.check(server.getStage()) && !quited) {
-            if (ck.check())
-                logger.warn("It seems that you cannot win. History back(b) is recommended.");
-            System.out.print(server.getStage());
-            for (;;) {
+            if (new CheckDead().check(server.getStage()))
+                logger.warn("It seems that you cannot win. History back(b) or Game restart(r) is recommended.");
+            dumpStage();
+            for (; ; ) {
                 String cmd = Utils.getLine().toLowerCase();
                 if (handleCommand(cmd)) break;
             }
         }
         if (!quited) {
-            System.out.print(server.getStage());
+            dumpStage();
             logger.info("You win~ Congratulations!");
         }
     }
 
+    private void dumpStage() {
+        StageView view = new StageView(server.getStage());
+        Dim2D dim = (Dim2D) view.info().getDim();
+        StringBuilder ret = new StringBuilder();
+        try {
+            for (int i = 0; i < dim.x; ++i) {
+                for (int j = 0; j < dim.y; ++j)
+                    ret.append(Utils.VIEWTEXT.get(view.get(dim.newVector(i, j))));
+                ret.append('\n');
+            }
+        } catch (OutOfMapException e) {
+            logger.fatal(e);
+            logger.fatal("At " + this.getClass());
+            System.exit(-1);
+        }
+        System.out.print(ret);
+    }
+
     private boolean handleCommand(String cmd) {
-        Dim2D dim = (Dim2D)server.getStage().player().getDim();
+        Dim2D dim = (Dim2D) server.getStage().player().getDim();
         try {
             if (cmd.length() == 1) {
                 switch (cmd.charAt(0)) {
@@ -89,17 +106,15 @@ public class Client {
                 String slot = Utils.getLine();
                 if (slot.length() == 0)
                     slot = SaveSlot.getInstance().getRandomSlot();
-                SaveSlot.getInstance().saveStage(slot, server.getStage());
+                SaveSlot.getInstance().save(slot, server.getStage());
                 return true;
             }
 
             logger.error("Unknown command.Please try again");
-        }
-        catch (CannotMoveException e) {
-            logger.error("Cannot moveElement "+e.element+" from "+e.src+" to "+e.dest);
-        }
-        catch (OutOfMapException e) {
-            logger.error("Cannot moveElement to "+e.target+":out of map!");
+        } catch (CannotMoveException e) {
+            logger.error("Cannot moveElement " + e.element + " from " + e.src + " to " + e.dest);
+        } catch (OutOfMapException e) {
+            logger.error("Cannot moveElement to " + e.target + ":out of map!");
         }
         return false;
     }

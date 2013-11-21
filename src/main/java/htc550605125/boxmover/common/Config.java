@@ -14,17 +14,20 @@ import java.io.IOException;
  * Date: 10/21/13
  * Time: 10:58 AM
  */
+
+/**
+ * Parse the configuration file "config,json"
+ */
 public class Config {
     private static Config instance = null;
     private static final Logger logger = LogManager.getLogger("common");
 
     private JsonNode rootNode;
 
-    private Config(File fd){
+    private Config(File fd) {
         try {
             this.rootNode = getRootNode(fd);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             logger.error(e);
             logger.error("Cannot read config file!");
             System.exit(-1);
@@ -32,6 +35,9 @@ public class Config {
         logger.info("Configuration loaded successfully");
     }
 
+    /**
+     * @return The root node of the config file
+     */
     public static JsonNode getRootNode(File fd) throws IOException {
         ObjectMapper om = new ObjectMapper();
         return om.readTree(fd);
@@ -44,6 +50,13 @@ public class Config {
         return instance;
     }
 
+    /**
+     * Get the node information by the path
+     *
+     * @param t    The root node
+     * @param path The path of the node you want, for example "/server/config"
+     * @return The JsonNode under the path of the root node
+     */
     public static JsonNode getNode(JsonNode t, String path) {
         String[] p = path.split("\\/");
         for (String node : p) {
@@ -53,14 +66,29 @@ public class Config {
         return t;
     }
 
+    /**
+     * @return The JsonNode under the path of the config
+     *         files' root node
+     */
     public JsonNode getNode(String path) {
         return getNode(rootNode, path);
     }
 
+    /**
+     * Get the node information by the path
+     *
+     * @param t    The root node
+     * @param path The path of the node you want, for example "/server/config"
+     * @return The String value of the JsonNode under the path of the root node
+     */
     public static String get(JsonNode t, String path) {
         return getNode(t, path).asText();
     }
 
+    /**
+     * @return The string value of the node under the
+     *         path of the config files' root node
+     */
     public String get(String path) {
         return get(rootNode, path);
     }

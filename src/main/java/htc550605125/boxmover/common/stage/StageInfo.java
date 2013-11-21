@@ -16,27 +16,28 @@ public class StageInfo implements Serializable, Comparable<StageInfo> {
 
     public StageInfo(Dim size, String mapID, String title) {
         this.dim = size;
-        this.ID = mapID; this.title = title;
+        this.ID = mapID;
+        this.title = title;
     }
 
     public int compareTo(StageInfo s) {
         return ID.compareTo(s.ID);
     }
 
-    public final Dim dim() {
+    public final Dim getDim() {
         return dim;
     }
 
-    public final String ID() {
+    public final String getID() {
         return ID;
     }
 
-    public final String title() {
+    public final String getTitle() {
         return title;
     }
 
     @Override
-    public String toString(){
-        return "mapID: "+ID+"   title: "+title+"   size: "+dim;
+    public String toString() {
+        return "mapID: " + ID + "   Title: " + title + "   size: " + dim;
     }
 }
