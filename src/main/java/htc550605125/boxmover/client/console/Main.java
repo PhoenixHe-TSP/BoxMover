@@ -9,10 +9,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -24,11 +21,9 @@ public class Main {
     private final static Logger logger = LogManager.getLogger("client");
 
     public static void main(String[] argv) {
-        for (;;) {
-            logger.info("Welcome to htc's BoxMover console client interface.");
-            Client client = new Client(new Server(getMapToLoad().clone()));
-            client.start();
-        }
+        logger.info("Welcome to htc's BoxMover console client interface.");
+        Client client = new Client(new Server(getMapToLoad().clone()));
+        client.start();
     }
 
     private static void quit() {
@@ -37,7 +32,7 @@ public class Main {
     }
 
     private static Stage getMapToLoad() {
-        for (;;) {
+        for (; ; ) {
             logger.info("Do you want load map(m) or load saves(s)? Or q to quit?(m/s/q)");
             String line = Utils.getLine().toLowerCase();
             Stage s = null;
@@ -47,7 +42,7 @@ public class Main {
                     s = loadLocalMap();
                     break;
                 case 's':
-                    s =  loadSave();
+                    s = loadSave();
                     break;
                 case 'q':
                     quit();
@@ -59,13 +54,13 @@ public class Main {
     private static Stage loadLocalMap() {
         Stages stages = LocalFileMapReader.getInstance().getMaps();
         logger.info("Here are available builtin maps:");
-        List<Stage> tmpList =  new ArrayList<Stage>(stages.values());
+        List<Stage> tmpList = new ArrayList<Stage>(stages.values());
         Collections.sort(tmpList);
-        for (Stage stage: tmpList)
+        for (Stage stage : tmpList)
             logger.info(stage.info());
-        logger.info("Please enter ID or custom path of map to load map.");
+        logger.info("Please enter getID or custom path of map to load map.");
         logger.info("Or enter \"q\" to break.");
-        for (;;) {
+        for (; ; ) {
             String s = Utils.getLine();
             if (s.equals("q")) return null;
             if (stages.containsKey(s))
@@ -81,17 +76,17 @@ public class Main {
     }
 
     private static Stage loadSave() {
-        Stages stages = SaveSlot.getInstance().getMaps();
+        HashMap<String, Object> stages = SaveSlot.getInstance().getMaps();
         logger.info("Here are available saves:");
-        for (Map.Entry<String, Stage> slot: stages.entrySet())
-            logger.info("slot:" + slot.getKey() + "    " + slot.getValue().info());
+        for (Map.Entry<String, Object> slot : stages.entrySet())
+            logger.info("slot:" + slot.getKey() + "    " + ((Stage) slot.getValue()).info());
         logger.info("Please enter slot to load one save.");
         logger.info("Or enter \"q\" to break");
-        for (;;) {
+        for (; ; ) {
             String s = Utils.getLine();
             if (s.equals("q")) return null;
             if (stages.containsKey(s))
-                return stages.get(s);
+                return (Stage) stages.get(s);
             logger.error("Cannot load save slot: " + s + " , please try again.");
         }
     }
