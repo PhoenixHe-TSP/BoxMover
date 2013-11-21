@@ -1,0 +1,39 @@
+{
+    "server":{
+        "file maps":{
+            "maps":[
+                {"ID":"1", "title":"Level 1", "file":"maps/1.map"},
+                {"ID":"2", "title":"Level 2", "file":"maps/2.map"},
+                {"ID":"3", "title":"Level 3", "file":"maps/3.map"},
+                {"ID":"4", "title":"Level 4", "file":"maps/4.map"},
+                {"ID":"5", "title":"Level 5", "file":"maps/5.map"},
+                {"ID":"6", "title":"Level 6", "file":"maps/6.map"},
+                {"ID":"7", "title":"Level 7", "file":"maps/7.map"},
+                {"ID":"8", "title":"Level 8", "file":"maps/8.map"},
+                {"ID":"9", "title":"Level 9", "file":"maps/9.map"}
+            ],
+            "config":{
+                "0":"EMPTY",
+                "1":"WALL",
+                "2":"EMPTY",
+                "3":"BOX",
+                "4":"DEST",
+                "5":"PLAYER",
+                "9":"BOX_DEST"
+            }
+        }
+    },
+
+    "client":{
+        "console":{
+            "config":{
+                "EMPTY":" ",
+                "WALL":"#",
+                "BOX":"O",
+                "DEST":"X",
+                "PLAYER":"M",
+                "BOX_DEST":"*"
+            }
+        }
+    }
+}

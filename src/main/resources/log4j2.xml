@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="OFF">
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="[%logger] %class %level: %msg%n"/>
+        </Console>
+        <Console name="Client" target="SYSTEM_OUT">
+            <PatternLayout pattern="[%logger]%level: %msg%n"/>
+        </Console>
+    </Appenders>
+    <Loggers>
+        <Root level="OFF"/>
+        <Logger name="common" level="TRACE">
+            <AppenderRef ref="Console"/>
+        </Logger>
+        <Logger name="client" level="TRACE">
+            <AppenderRef ref="Client"/>
+        </Logger>
+        <Logger name="server" level="TRACE">
+            <AppenderRef ref="Console"/>
+        </Logger>
+    </Loggers>
+</Configuration>
