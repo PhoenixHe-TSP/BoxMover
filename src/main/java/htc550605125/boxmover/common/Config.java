@@ -28,9 +28,7 @@ public class Config {
         try {
             this.rootNode = getRootNode(fd);
         } catch (IOException e) {
-            logger.error(e);
-            logger.error("Cannot read config file!");
-            System.exit(-1);
+            Utils.exit(e, logger, "Cannot read config file!");
         }
         logger.info("Configuration loaded successfully");
     }

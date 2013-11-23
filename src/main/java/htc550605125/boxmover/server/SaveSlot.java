@@ -22,7 +22,7 @@ public class SaveSlot {
     private static final Logger logger = LogManager.getLogger("common");
     private static SaveSlot instance = null;
     private String saveRoot = null, suffix = null, randomValues = null;
-    private HashMap<String, Object> maps = new HashMap<String, Object>();
+    private final HashMap<String, Object> maps = new HashMap<String, Object>();
 
     public static SaveSlot getInstance() {
         if (instance == null)
@@ -54,7 +54,12 @@ public class SaveSlot {
     public void save(String slot, Object obj) {
         maps.put(slot, obj);
         slot = saveRoot + slot + suffix;
-        writeSlot(new File(slot), obj);
+        try {
+            writeSlot(new File(slot), obj);
+        } catch (IOException e) {
+            logger.warn("Cannot save to: " + slot);
+            return;
+        }
         logger.info("Game saved to " + slot);
     }
 
@@ -71,7 +76,9 @@ public class SaveSlot {
         }
     }
 
-    // Load a save slot from a file
+    /**
+     * Load a save slot from a file
+     */
     private void loadSaves(File fd) {
         if (fd.isFile()) {
             String name = fd.getName();
@@ -88,22 +95,21 @@ public class SaveSlot {
         }
         try {
             for (File f : fd.listFiles()) loadSaves(f);
-        } catch (NullPointerException e) {
+        } catch (java.lang.NullPointerException e) {
         }
     }
 
-    // Save the stage to a file
-    private void writeSlot(File fd, Object obj) {
-        try {
-            if (!fd.exists()) fd.createNewFile();
-            new ObjectOutputStream(new FileOutputStream(fd)).writeObject(obj);
-        } catch (IOException e) {
-            logger.fatal(e);
-            e.printStackTrace();
-            System.exit(-1);
-        }
+    /**
+     * Save the stage to a file
+     */
+    private void writeSlot(File fd, Object obj) throws IOException {
+        if (!fd.exists()) fd.createNewFile();
+        new ObjectOutputStream(new FileOutputStream(fd)).writeObject(obj);
     }
 
+    /**
+     * Read one slot from a file
+     */
     private Object readSlot(File fd) throws IOException {
         try {
             return new ObjectInputStream(new FileInputStream(fd)).readObject();

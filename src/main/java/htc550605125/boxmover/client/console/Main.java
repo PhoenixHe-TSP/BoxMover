@@ -17,18 +17,22 @@ import java.util.*;
  * Date: 13-10-24
  * Time: 上午9:31
  */
+
+/**
+ * Main class of the console client
+ */
 public class Main {
     private final static Logger logger = LogManager.getLogger("client");
 
+    /**
+     * Main loop of the client
+     */
     public static void main(String[] argv) {
         logger.info("Welcome to htc's BoxMover console client interface.");
-        Client client = new Client(new Server(getMapToLoad().clone()));
-        client.start();
-    }
-
-    private static void quit() {
-        logger.info("bye~");
-        System.exit(0);
+        for (; ; ) {
+            Client client = new Client(new Server(getMapToLoad().clone()));
+            client.start();
+        }
     }
 
     private static Stage getMapToLoad() {
@@ -45,7 +49,8 @@ public class Main {
                     s = loadSave();
                     break;
                 case 'q':
-                    quit();
+                    logger.info("bye ~");
+                    System.exit(0);
             }
             if (s != null) return s;
         }

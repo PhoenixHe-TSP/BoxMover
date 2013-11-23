@@ -15,20 +15,31 @@ import java.util.Scanner;
  * Date: 10/28/13
  * Time: 7:56 AM
  */
+
+/**
+ * Utilities of console client
+ */
 public class Utils {
     private static final Scanner input = new Scanner(System.in);
 
+    /**
+     * Map ElementViw to the string that shows in the console.
+     */
     public final static HashMap<ElementView, String> VIEWTEXT = new HashMap<ElementView, String>();
     private static final Config conf = Config.getConfig();
+
     static {
         JsonNode arr = conf.getNode("client/console/config");
-        for (Iterator<String> it = arr.getFieldNames(); it.hasNext();) {
+        for (Iterator<String> it = arr.getFieldNames(); it.hasNext(); ) {
             String name = it.next();
             //name -> ElementSet -> ElementView
             VIEWTEXT.put(ElementView.valueOf(ElementSet.valueOf(name)), arr.get(name).asText());
         }
     }
 
+    /**
+     * Print ">" and get one line of input
+     */
     public static String getLine() {
         System.out.print(">");
         return input.nextLine().trim();

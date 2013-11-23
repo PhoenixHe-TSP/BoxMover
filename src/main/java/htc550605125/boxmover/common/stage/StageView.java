@@ -13,9 +13,18 @@ import java.io.Serializable;
  * Date: 10/23/13
  * Time: 1:54 PM
  */
+
+/**
+ * A view of a stage
+ *
+ * @see ElementView
+ */
 public class StageView extends StageBase implements Serializable {
     private final ElementView[] data;
 
+    /**
+     * Construct a view from a stage
+     */
     public StageView(Stage stage) {
         super(stage.info);
         player = stage.player;

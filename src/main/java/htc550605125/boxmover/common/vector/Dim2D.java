@@ -35,11 +35,20 @@ public class Dim2D extends Dim implements Serializable, Cloneable {
     }
 
     /**
-     * @return The number of all the possible {@link Vector}
+     * {@inheritDoc}
      */
     @Override
     public int getMax() {
         return x * y;
+    }
+
+    @Override
+    public boolean equals(Dim dim) {
+        return dim instanceof Dim2D && equals((Dim2D) dim);
+    }
+
+    public boolean equals(Dim2D dim) {
+        return dim.x == x && dim.y == y;
     }
 
     // return All the possible {@link Vector}

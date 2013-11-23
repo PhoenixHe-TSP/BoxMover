@@ -1,6 +1,7 @@
 package htc550605125.boxmover.server.mapreader;
 
 import htc550605125.boxmover.common.Config;
+import htc550605125.boxmover.common.Utils;
 import htc550605125.boxmover.common.element.ElementSet;
 import htc550605125.boxmover.common.exception.BoxMoverBaseException;
 import htc550605125.boxmover.common.stage.Stage;
@@ -46,7 +47,7 @@ public class LocalFileMapReader extends MapReader {
     }
 
     /**
-     * Local map list is in config.json/server/file maps/maps
+     * Local map list is in "config.json/server/file maps/maps"
      */
     private LocalFileMapReader() {
         super(conf.getNode("server/file maps/maps"));
@@ -72,8 +73,7 @@ public class LocalFileMapReader extends MapReader {
             }
             return ret;
         } catch (BoxMoverBaseException e) {
-            logger.fatal(e);
-            System.exit(-1);
+            Utils.exit(e, logger, "");
         }
         return null;
     }

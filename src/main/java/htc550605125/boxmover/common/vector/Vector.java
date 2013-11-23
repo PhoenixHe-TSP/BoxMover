@@ -1,6 +1,9 @@
 package htc550605125.boxmover.common.vector;
 
+import htc550605125.boxmover.common.Utils;
+import htc550605125.boxmover.common.exception.CannotConvertException;
 import htc550605125.boxmover.common.exception.OutOfMapException;
+import org.apache.logging.log4j.LogManager;
 
 import java.io.Serializable;
 
@@ -25,8 +28,7 @@ public abstract class Vector implements Serializable, Cloneable {
         try {
             ret = (Vector) super.clone();
         } catch (CloneNotSupportedException e) {
-            e.printStackTrace();
-            System.exit(-1);
+            Utils.exit(e, LogManager.getLogger("common"), "");
         }
         return ret;
     }
@@ -51,8 +53,10 @@ public abstract class Vector implements Serializable, Cloneable {
 
     /**
      * Add another Vector to this Vector
+     *
+     * @return This vector
      */
-    public abstract Vector add(Vector a);
+    public abstract Vector add(Vector a) throws CannotConvertException;
 
     /**
      * @return The opposite Vector

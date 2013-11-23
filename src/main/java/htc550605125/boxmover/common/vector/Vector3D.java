@@ -1,5 +1,7 @@
 package htc550605125.boxmover.common.vector;
 
+import htc550605125.boxmover.common.exception.CannotConvertException;
+
 import java.io.Serializable;
 
 /**
@@ -57,14 +59,25 @@ public class Vector3D extends Vector implements Serializable, Cloneable {
         dim = v.dim;
     }
 
+    /**
+     * format: ([x],[y],[z])
+     */
     @Override
     public String toString() {
         return "(" + x + "," + y + "," + z + ")";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public Vector3D add(Vector a) {
-        Vector3D v = (Vector3D) a;
+    public Vector3D add(Vector v) throws CannotConvertException {
+        if (!(v instanceof Vector3D))
+            throw new CannotConvertException(Vector3D.class, v.getClass());
+        return add((Vector3D) v);
+    }
+
+    public Vector3D add(Vector3D v) {
         return new Vector3D(v.x + x, v.y + y, v.z + z, dim);
     }
 

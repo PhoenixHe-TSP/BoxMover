@@ -1,5 +1,7 @@
 package htc550605125.boxmover.common.vector;
 
+import htc550605125.boxmover.common.exception.CannotConvertException;
+
 import java.io.Serializable;
 
 /**
@@ -55,14 +57,25 @@ public class Vector2D extends Vector implements Serializable, Cloneable {
         dim = v.dim;
     }
 
+    /**
+     * format: ([x],[y])
+     */
     @Override
     public String toString() {
         return "(" + x + "," + y + ")";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public Vector2D add(Vector a) {
-        Vector2D v = (Vector2D) a;
+    public Vector2D add(Vector v) throws CannotConvertException {
+        if (!(v instanceof Vector2D))
+            throw new CannotConvertException(Vector2D.class, v.getClass());
+        return add((Vector2D) v);
+    }
+
+    public Vector2D add(Vector2D v) {
         return new Vector2D(v.x + x, v.y + y, _dim);
     }
 

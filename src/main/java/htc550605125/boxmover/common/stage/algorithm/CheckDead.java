@@ -1,7 +1,10 @@
 package htc550605125.boxmover.common.stage.algorithm;
 
+import htc550605125.boxmover.common.Utils;
 import htc550605125.boxmover.common.element.Element;
 import htc550605125.boxmover.common.element.ElementSet;
+import htc550605125.boxmover.common.exception.BoxMoverBaseException;
+import htc550605125.boxmover.common.exception.CannotConvertException;
 import htc550605125.boxmover.common.exception.OutOfMapException;
 import htc550605125.boxmover.common.stage.Stage;
 import htc550605125.boxmover.common.vector.Vector;
@@ -19,9 +22,13 @@ import java.util.Queue;
  */
 
 /**
+ * <pre>
  * Algorithm that check if the player is unable to win
  * The algorithm is a bit weak that it could not checkout
  * all the fail situation, but quiet a lot.
+ * Algorithm detail:
+ *      TODO
+ * </pre>
  */
 public class CheckDead {
     private final static Logger logger = LogManager.getLogger("server");
@@ -42,26 +49,22 @@ public class CheckDead {
         while (!queue.isEmpty()) {
             Vector x = queue.poll();
             for (Vector v : x.getDim().getAllDirections()) {
-                Vector u = x.add(v);
-                if (vis[u.getPos()]) continue;
-                if (!tryPlayerMove(x, v)) continue;
-                queue.offer(u);
-                vis[u.getPos()] = true;
                 try {
+                    Vector u = x.add(v);
+                    if (vis[u.getPos()]) continue;
+                    if (playerCannotMove(x, v)) continue;
+                    queue.offer(u);
+                    vis[u.getPos()] = true;
                     ElementSet es = stage.getPos(u);
                     if (shouldCount(es)) {
                         ++touchableBox;
                         es.del(Element.BOX);
                     }
-                } catch (OutOfMapException e) {
-                    e.printStackTrace();
-                    logger.fatal(e);
-                    System.exit(-1);
+                } catch (BoxMoverBaseException e) {
+                    Utils.exit(e, logger, "");
                 }
             }
         }
-        //logger.debug("touchable=" + touchableBox);
-        //logger.debug("boxremain=" + boxRemain);
         return boxRemain != touchableBox;
     }
 
@@ -69,21 +72,21 @@ public class CheckDead {
         return es.has(Element.BOX) && !es.has(Element.DEST);
     }
 
-    private boolean tryPlayerMove(Vector player, Vector d) {
+    private boolean playerCannotMove(Vector player, Vector d) throws CannotConvertException {
         Vector d1 = player.add(d), d2 = d1.add(d);
         try {
             ElementSet Elem0 = stage.getPos(d1);
 
             if (Elem0.has(Element.WALL))
-                return false;
+                return true;
             if (Elem0.has(Element.BOX)) {
                 ElementSet Elem1 = stage.getPos(d2);
                 if (Elem1.has(Element.BOX) || Elem1.has(Element.WALL))
-                    return false;
+                    return true;
             }
         } catch (OutOfMapException e) {
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
 }

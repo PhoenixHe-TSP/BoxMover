@@ -10,8 +10,18 @@ import java.io.Serializable;
  * Date: 10/23/13
  * Time: 1:59 PM
  */
+
+/**
+ * Store the extra information about a stage.
+ */
 public class StageInfo implements Serializable, Comparable<StageInfo> {
+    /**
+     * The dimension of the game stage
+     */
     private final Dim dim;
+    /**
+     * The id and the title of the game
+     */
     private final String ID, title;
 
     public StageInfo(Dim size, String mapID, String title) {
@@ -20,6 +30,9 @@ public class StageInfo implements Serializable, Comparable<StageInfo> {
         this.title = title;
     }
 
+    /**
+     * Compare two stage information by their ID
+     */
     public int compareTo(StageInfo s) {
         return ID.compareTo(s.ID);
     }

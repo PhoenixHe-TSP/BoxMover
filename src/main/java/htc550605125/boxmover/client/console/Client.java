@@ -1,5 +1,6 @@
 package htc550605125.boxmover.client.console;
 
+import htc550605125.boxmover.common.exception.CannotConvertException;
 import htc550605125.boxmover.common.exception.CannotMoveException;
 import htc550605125.boxmover.common.exception.OutOfMapException;
 import htc550605125.boxmover.common.stage.StageView;
@@ -17,6 +18,11 @@ import org.apache.logging.log4j.Logger;
  * Date: 10/21/13
  * Time: 4:33 PM
  */
+
+/**
+ * A simple console client. It connects to
+ * server by running native java codes of server.
+ */
 public class Client {
     private final static Logger logger = LogManager.getLogger("client");
 
@@ -27,10 +33,19 @@ public class Client {
         this.server = server;
     }
 
+    /**
+     * <pre>
+     * Play game of one stage.
+     * It will exit if:
+     *      1. The player wins
+     *      2. The player exited
+     * </pre>
+     */
     public void start() {
         logger.info("Stage:" + server.getStage().info().getTitle() + " Loaded.");
         logger.info("Enter \"h\" to show help info.");
         while (!CheckGameSuccess.check(server.getStage()) && !quited) {
+            // check if the player could not win.
             if (new CheckDead().check(server.getStage()))
                 logger.warn("It seems that you cannot win. History back(b) or Game restart(r) is recommended.");
             dumpStage();
@@ -56,13 +71,16 @@ public class Client {
                 ret.append('\n');
             }
         } catch (OutOfMapException e) {
-            logger.fatal(e);
-            logger.fatal("At " + this.getClass());
-            System.exit(-1);
+            htc550605125.boxmover.common.Utils.exit(e, logger, "");
         }
         System.out.print(ret);
     }
 
+    /**
+     * Handle one command
+     *
+     * @return Weather the player changes the stage so that the stage should be re-printed
+     */
     private boolean handleCommand(String cmd) {
         Dim2D dim = (Dim2D) server.getStage().player().getDim();
         try {
@@ -101,10 +119,12 @@ public class Client {
                         return true;
                 }
             }
+            // Save the stage
             if (cmd.equals("save")) {
                 logger.info("Please specific save slot (empty for random slot):");
                 String slot = Utils.getLine();
                 if (slot.length() == 0)
+                    // Generate random save slot
                     slot = SaveSlot.getInstance().getRandomSlot();
                 SaveSlot.getInstance().save(slot, server.getStage());
                 return true;
@@ -115,6 +135,8 @@ public class Client {
             logger.error("Cannot moveElement " + e.element + " from " + e.src + " to " + e.dest);
         } catch (OutOfMapException e) {
             logger.error("Cannot moveElement to " + e.target + ":out of map!");
+        } catch (CannotConvertException e) {
+            htc550605125.boxmover.common.Utils.exit(e, logger, "");
         }
         return false;
     }

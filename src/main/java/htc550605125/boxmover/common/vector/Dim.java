@@ -10,8 +10,12 @@ import java.io.Serializable;
  */
 
 /**
+ * <pre>
  * Abstract Dimension Class
  * It defines the dimension of the {@link Vector}
+ * </pre>
+ *
+ * @see Vector
  */
 public abstract class Dim implements Serializable, Cloneable {
     // All the possible vectors in this dimension
@@ -49,6 +53,8 @@ public abstract class Dim implements Serializable, Cloneable {
      * @return The number of all the {@link Vector} in this dimension
      */
     public abstract int getMax();
+
+    public abstract boolean equals(Dim dim);
 
     protected abstract Vector[] _getAllVectors();
 

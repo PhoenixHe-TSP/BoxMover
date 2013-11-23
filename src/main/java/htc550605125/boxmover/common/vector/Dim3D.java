@@ -7,10 +7,12 @@ package htc550605125.boxmover.common.vector;
  * Time: 10:42 AM
  */
 
+import java.io.Serializable;
+
 /**
  * Three-dimensional game's {@link Dim}
  */
-public class Dim3D extends Dim {
+public class Dim3D extends Dim implements Serializable, Cloneable {
     /**
      * Define the dimension
      */
@@ -38,6 +40,15 @@ public class Dim3D extends Dim {
     @Override
     public int getMax() {
         return x * y * z;
+    }
+
+    @Override
+    public boolean equals(Dim dim) {
+        return dim instanceof Dim3D && equals((Dim3D) dim);
+    }
+
+    public boolean equals(Dim3D dim) {
+        return dim.x == x && dim.y == y && dim.z == z;
     }
 
     // return all the possible vector for the base class to decorate

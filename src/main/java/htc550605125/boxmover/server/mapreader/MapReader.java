@@ -25,6 +25,9 @@ public abstract class MapReader {
     private final static Logger logger = LogManager.getLogger("server");
     private Stages maps = null;
 
+    /**
+     * Init the MapReader with a root map list config JsonNode
+     */
     protected MapReader(JsonNode node) {
         maps = new Stages();
         for (Iterator<Map.Entry<String, JsonNode>> it = node.getFields(); it.hasNext(); ) {
@@ -34,7 +37,6 @@ public abstract class MapReader {
                 String title = t.getValue().get("title").asText();
                 Stage map = parse(file, t.getKey(), title);
                 if (!map.validate()) logger.warn(file + " seems not a valid map.");
-                //Add the map to the map list
                 maps.put(map.info().getID(), map);
             } catch (IOException e) {
                 logger.error("Cannot load " + t.getValue().get("file"));

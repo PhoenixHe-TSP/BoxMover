@@ -1,8 +1,5 @@
 package htc550605125.boxmover.common.element;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 /**
  * Created with IntelliJ IDEA.
  * User: htc
@@ -12,9 +9,8 @@ import org.apache.logging.log4j.Logger;
 public enum ElementView {
     PLAYER_VIEW, BOX_VIEW, DEST_VIEW, WALL_VIEW, EMPTY_VIEW, BOX_DEST_VIEW;
 
-    private final static Logger logger = LogManager.getLogger("common");
-
     private final static ElementView[] from = new ElementView[65536];
+
     static {
         from[0] = EMPTY_VIEW;
         from[new ElementSet().add(Element.PLAYER).value()] = PLAYER_VIEW;
@@ -25,8 +21,10 @@ public enum ElementView {
         from[new ElementSet().add(Element.DEST).add(Element.BOX).value()] = BOX_DEST_VIEW;
     }
 
+    /**
+     * @return The view of the ElementSet
+     */
     public static ElementView valueOf(ElementSet es) {
-        //logger.debug(es.value());
         return from[es.value()];
     }
 }
