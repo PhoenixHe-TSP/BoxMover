@@ -59,13 +59,13 @@ public class LocalFileMapReader extends MapReader {
     public Stage parse(String path, String mapID, String title) throws FileNotFoundException {
         try {
             Scanner scanner = new Scanner(new FileReader(new File(path)));
-            //Read the size of the map
+            // Read the size of the map
             int m = scanner.nextInt(), n = scanner.nextInt();
-            //Read the '\n' of the first line
+            // Read the '\n' of the first line
             scanner.nextLine();
             Dim2D dim = new Dim2D(n, m);
             Stage ret = new Stage(new StageInfo(dim, mapID, title));
-            //Read the map entity
+            // Read the map entity
             for (int x = 0; x < n; ++x) {
                 String line = scanner.nextLine();
                 for (int y = 0; y < m; ++y)

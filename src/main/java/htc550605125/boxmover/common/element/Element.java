@@ -21,11 +21,13 @@ public class Element implements Serializable, Cloneable {
     private final int nCode;
 
     /**
-     * Init the Element with specific code.
+     * <pre>
+     * Initialize the Element with specific code.
      * PLAYER is 0
      * BOX is 1
      * DEST is 2
      * WALL is 3
+     * </pre>
      */
     public Element(int nCode) {
         this.nCode = nCode;

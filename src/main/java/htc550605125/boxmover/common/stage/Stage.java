@@ -116,6 +116,11 @@ public class Stage extends StageBase implements Serializable, Cloneable, Compara
         return this;
     }
 
+    /**
+     * Valdate the stage.
+     *
+     * @return Whether the number of boxes and the number of destination is equal
+     */
     public boolean validate() {
         if (player == null) return false;
         int destCnt = 0, boxCnt = 0;

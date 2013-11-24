@@ -16,7 +16,13 @@ import java.util.Random;
  */
 
 /**
+ * <pre>
  * The management of the saves
+ * Every saves are at: saveRoot/slot.suffix
+ * The saveRoot and suffix can be found in config file.
+ *
+ * @see Config
+ *      </pre>
  */
 public class SaveSlot {
     private static final Logger logger = LogManager.getLogger("common");
@@ -64,6 +70,19 @@ public class SaveSlot {
     }
 
     /**
+     * Delete a save slot
+     *
+     * @return Whether the operation is success
+     */
+    public boolean deleteSave(String slot) {
+        if (!maps.containsKey(slot)) return false;
+        maps.remove(slot);
+        slot = saveRoot + slot + suffix;
+        new File(slot).delete();
+        return true;
+    }
+
+    /**
      * @return Random generated slot name
      */
     public String getRandomSlot() {
@@ -77,7 +96,7 @@ public class SaveSlot {
     }
 
     /**
-     * Load a save slot from a file
+     * Load a save slot from /saveRoot/*.suffix
      */
     private void loadSaves(File fd) {
         if (fd.isFile()) {

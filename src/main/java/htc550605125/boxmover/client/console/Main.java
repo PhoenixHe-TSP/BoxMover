@@ -37,7 +37,7 @@ public class Main {
 
     private static Stage getMapToLoad() {
         for (; ; ) {
-            logger.info("Do you want load map(m) or load saves(s)? Or q to quit?(m/s/q)");
+            logger.info("Do you want load map(m) or load saves(s) or delete saves(d) or q to quit?(m/s/q/d)");
             String line = Utils.getLine().toLowerCase();
             Stage s = null;
             if (line.length() == 0) continue;
@@ -47,6 +47,9 @@ public class Main {
                     break;
                 case 's':
                     s = loadSave();
+                    break;
+                case 'd':
+                    deleteSave();
                     break;
                 case 'q':
                     logger.info("bye ~");
@@ -93,6 +96,26 @@ public class Main {
             if (stages.containsKey(s))
                 return (Stage) stages.get(s);
             logger.error("Cannot load save slot: " + s + " , please try again.");
+        }
+    }
+
+    private static void deleteSave() {
+        HashMap<String, Object> stages = SaveSlot.getInstance().getMaps();
+        logger.info("Here are available saves:");
+        for (Map.Entry<String, Object> slot : stages.entrySet())
+            logger.info("slot:" + slot.getKey() + "    " + ((Stage) slot.getValue()).info());
+        logger.info("Please enter slot to delete one save.");
+        logger.info("Or enter \"q\" to break");
+        for (; ; ) {
+            String s = Utils.getLine();
+            if (s.equals("q")) return;
+            //if (stages.containsKey(s))
+            if (SaveSlot.getInstance().deleteSave(s)) {
+                logger.info("Successfully delete save slot : " + s);
+                logger.info("Please enter \"q\" to break or enter a slot to continue deleting.");
+            } else {
+                logger.error("Cannot delete save slot : " + s + " , please try again.");
+            }
         }
     }
 }

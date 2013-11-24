@@ -52,6 +52,11 @@ public class Client {
             for (; ; ) {
                 String cmd = Utils.getLine().toLowerCase();
                 if (handleCommand(cmd)) break;
+                boolean needBreak = false;
+                for (Byte x : cmd.getBytes()) {
+                    needBreak |= handleSingleCommand((char) x.byteValue());
+                }
+                if (needBreak) break;
             }
         }
         if (!quited) {
@@ -76,67 +81,105 @@ public class Client {
         System.out.print(ret);
     }
 
-    /**
-     * Handle one command
-     *
-     * @return Weather the player changes the stage so that the stage should be re-printed
-     */
-    private boolean handleCommand(String cmd) {
+    private void saveGame() {
+        logger.info("Please specific save slot (empty for random slot):");
+        String slot = Utils.getLine();
+        if (slot.length() == 0)
+            // Generate random save slot
+            slot = SaveSlot.getInstance().getRandomSlot();
+        SaveSlot.getInstance().save(slot, server.getStage());
+    }
+
+    private void backNSteps() {
+        try {
+            logger.info("History back N steps - Please input N:");
+            int n = Integer.parseInt(Utils.getLine());
+            while (n-- > 0) server.historyBack();
+        } catch (NumberFormatException e) {
+            logger.error("Invalid input");
+        } catch (CannotMoveException e) {
+            logger.warn("History record is empty");
+        }
+    }
+
+    private void dumpHelpInfo() {
+        logger.info("Command List:");
+        logger.info("w      move up");
+        logger.info("a      move left");
+        logger.info("s      move down");
+        logger.info("d      move right");
+        logger.info("h      print this help information");
+        logger.info("q      quit the game stage");
+        logger.info("r      restart the game stage");
+        logger.info("b      history back");
+        logger.info("back   history back n steps");
+        logger.info("save   save the current stage to a save slot");
+        logger.info("");
+        logger.info("Note:  the commands are not case sensitive.");
+        logger.info("       you can type combinations of single characters,");
+        logger.info("       e.g. \"wshb\" will move up then move down then dump help info then history back.");
+        logger.info("       and \"wsaadsswdd\" will solve the first local map");
+    }
+
+    private boolean handleSingleCommand(char ch) {
         Dim2D dim = (Dim2D) server.getStage().player().getDim();
         try {
-            if (cmd.length() == 1) {
-                switch (cmd.charAt(0)) {
-                    case 'w':
-                        logger.info("moveElement up");
-                        server.playerMove(dim.newVector(-1, 0));
-                        return true;
-                    case 's':
-                        logger.info("moveElement down");
-                        server.playerMove(dim.newVector(1, 0));
-                        return true;
-                    case 'a':
-                        logger.info("moveElement left");
-                        server.playerMove(dim.newVector(0, -1));
-                        return true;
-                    case 'd':
-                        logger.info("moveElement right");
-                        server.playerMove(dim.newVector(0, 1));
-                        return true;
-                    case 'b':
-                        logger.info("history back");
+            switch (ch) {
+                case 'w':
+                    logger.info("Move up");
+                    server.playerMove(dim.newVector(-1, 0));
+                    return true;
+                case 's':
+                    logger.info("Move down");
+                    server.playerMove(dim.newVector(1, 0));
+                    return true;
+                case 'a':
+                    logger.info("Move left");
+                    server.playerMove(dim.newVector(0, -1));
+                    return true;
+                case 'd':
+                    logger.info("Move right");
+                    server.playerMove(dim.newVector(0, 1));
+                    return true;
+                case 'b':
+                    logger.info("History back");
+                    try {
                         server.historyBack();
-                        return true;
-                    case 'r':
-                        logger.info("restart game");
-                        server.restartGame();
-                        return true;
-                    case 'h':
-                        logger.info("help info - !!TODO!!");
-                        return false;
-                    case 'q':
-                        logger.info("quit game.");
-                        quited = true;
-                        return true;
-                }
+                    } catch (CannotMoveException e) {
+                        logger.warn("History record is empty");
+                    }
+                    return true;
+                case 'r':
+                    logger.info("Restart game stage");
+                    server.restartGame();
+                    return true;
+                case 'h':
+                    dumpHelpInfo();
+                    return false;
+                case 'q':
+                    logger.info("Quit game stage");
+                    quited = true;
+                    return true;
             }
-            // Save the stage
-            if (cmd.equals("save")) {
-                logger.info("Please specific save slot (empty for random slot):");
-                String slot = Utils.getLine();
-                if (slot.length() == 0)
-                    // Generate random save slot
-                    slot = SaveSlot.getInstance().getRandomSlot();
-                SaveSlot.getInstance().save(slot, server.getStage());
-                return true;
-            }
-
-            logger.error("Unknown command.Please try again");
+            logger.error("Unknown command.");
         } catch (CannotMoveException e) {
-            logger.error("Cannot moveElement " + e.element + " from " + e.src + " to " + e.dest);
+            logger.error("Cannot move " + e.element + " from " + e.src + " to " + e.dest);
         } catch (OutOfMapException e) {
-            logger.error("Cannot moveElement to " + e.target + ":out of map!");
+            logger.error("Cannot move to " + e.target + " : out of map!");
         } catch (CannotConvertException e) {
             htc550605125.boxmover.common.Utils.exit(e, logger, "");
+        }
+        return false;
+    }
+
+    private boolean handleCommand(String cmd) {
+        if (cmd.equals("save")) {
+            saveGame();
+            return true;
+        }
+        if (cmd.equals("back")) {
+            backNSteps();
+            return true;
         }
         return false;
     }
