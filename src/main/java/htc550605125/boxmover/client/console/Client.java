@@ -48,11 +48,14 @@ public class Client {
             // check if the player could not win.
             if (new CheckDead().check(server.getStage()))
                 logger.warn("It seems that you cannot win. History back(b) or Game restart(r) is recommended.");
+            logger.info("You have moved " + server.getStage().info().getMoveSteps() + " step(s)");
             dumpStage();
-            for (; ; ) {
+            for (;;) {
                 String cmd = Utils.getLine().toLowerCase();
+                // Try to handle long command
                 if (handleCommand(cmd)) break;
                 boolean needBreak = false;
+                // Handle every character of the command
                 for (Byte x : cmd.getBytes()) {
                     needBreak |= handleSingleCommand((char) x.byteValue());
                 }
@@ -61,7 +64,7 @@ public class Client {
         }
         if (!quited) {
             dumpStage();
-            logger.info("You win~ Congratulations!");
+            logger.info("You pass this stage in " + server.getStage().info().getMoveSteps() + " step(s)~ Congratulations!");
         }
     }
 

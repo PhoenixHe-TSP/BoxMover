@@ -90,5 +90,6 @@ public class Server {
             stage.moveElement(Element.BOX, d1, d2);
         }
         stage.moveElement(Element.PLAYER, d0, d1);
+        stage.moveOneStep();
     }
 }

@@ -64,7 +64,7 @@ public class LocalFileMapReader extends MapReader {
             // Read the '\n' of the first line
             scanner.nextLine();
             Dim2D dim = new Dim2D(n, m);
-            Stage ret = new Stage(new StageInfo(dim, mapID, title));
+            Stage ret = new Stage(new StageInfo(dim, mapID, title, 0));
             // Read the map entity
             for (int x = 0; x < n; ++x) {
                 String line = scanner.nextLine();

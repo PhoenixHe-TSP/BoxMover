@@ -24,10 +24,17 @@ public class StageInfo implements Serializable, Comparable<StageInfo> {
      */
     private final String ID, title;
 
-    public StageInfo(Dim size, String mapID, String title) {
+    private final int moveSteps;
+
+    public StageInfo(Dim size, String mapID, String title, int moveSteps) {
         this.dim = size;
         this.ID = mapID;
         this.title = title;
+        this.moveSteps = moveSteps;
+    }
+
+    public StageInfo move() {
+        return new StageInfo(dim, ID, title, moveSteps + 1);
     }
 
     /**
@@ -47,6 +54,10 @@ public class StageInfo implements Serializable, Comparable<StageInfo> {
 
     public final String getTitle() {
         return title;
+    }
+
+    public final int getMoveSteps() {
+        return moveSteps;
     }
 
     @Override

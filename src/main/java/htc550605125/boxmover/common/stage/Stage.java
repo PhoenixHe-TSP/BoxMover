@@ -130,4 +130,8 @@ public class Stage extends StageBase implements Serializable, Cloneable, Compara
         }
         return boxCnt == destCnt;
     }
+
+    public void moveOneStep() {
+        info = info.move();
+    }
 }
