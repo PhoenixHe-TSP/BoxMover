@@ -56,7 +56,7 @@ public class Server {
      */
     public void restartGame() {
         try {
-            for (; ; ) historyBack();
+            for (;;) historyBack();
         } catch (CannotMoveException e) {
         }
     }

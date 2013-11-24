@@ -1,0 +1,9 @@
+htc550605125.boxmover.client.console
+htc550605125.boxmover.common
+htc550605125.boxmover.common.element
+htc550605125.boxmover.common.exception
+htc550605125.boxmover.common.stage
+htc550605125.boxmover.common.stage.algorithm
+htc550605125.boxmover.common.vector
+htc550605125.boxmover.server
+htc550605125.boxmover.server.mapreader
